@@ -76,7 +76,7 @@
     isNormalUser = true;
     extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
-      (import /home/josh/work/josh_config/nvim.nix pkgs)
+      (import /home/josh/work/josh_config/neovim.nix pkgs)
       ripgrep
       firefox
       tree
