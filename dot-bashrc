@@ -1,0 +1,42 @@
+alias cl='clear;ls'
+alias digp='dils | grep'
+alias dils='docker image list'
+alias dpgp='docker ps -a | grep'
+alias dpsa='docker ps -a'
+alias drm='docker rm'
+alias ga='git add'
+alias gb='git branch'
+alias gc='git commit -m'
+alias gl='git log --graph'
+alias gs='git status'
+alias hgp='history | grep'
+alias tat='tmux a -t'
+alias tls='tmux ls'
+alias who_dis='ps -u -p'
+alias zeus_juice='nvidia-smi'
+
+_TMUX_SHARE_FILE="/tmp/josh_tmux"
+alias tmux-at="tmux -S $_TMUX_SHARE_FILE attach -t"
+alias tmux-sh="tmux -S $_TMUX_SHARE_FILE new -s"
+
+_tmux_cmd () {
+    echo "tmux -S $_TMUX_SHARE_FILE attach -t $(tmux display-message -p '#S')"
+}
+alias tmux-cmd=_tmux_cmd
+
+
+alias pygrep='grep -r --include "*.py" --exclude-dir "venv" --exclude-dir ".*"'
+
+# Set default editor to nvim (rather than Nano)
+export EDITOR="nvim"
+
+# Enable direnv
+eval "$(direnv hook bash)"
+
+# Utility to create virtual envs
+venv-new() {
+  VENV_NAME=${1:-"venv"}
+  python -m venv $VENV_NAME
+  source ${VENV_NAME}/bin/activate
+  pip install --upgrade pip
+}
