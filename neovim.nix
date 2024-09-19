@@ -3,10 +3,7 @@ pkgs: pkgs.wrapNeovim pkgs.neovim-unwrapped {
   configure = {
 
     buildInputs = with pkgs; [
-        ripgrep
-        tig
         ruff-lsp
-        direnv
         nodePackages.pyright
     ];
 

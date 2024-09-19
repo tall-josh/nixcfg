@@ -214,7 +214,7 @@ nvim_lsp["ruff_lsp"].setup {
   capabilities = capabilities
   }
 
-local servers = { "pyright", "tsserver", "ruff_lsp", "lua_ls", force = true }
+local servers = { "pyright", "flake8-bandit", "isort", "tsserver", "ruff_lsp", "lua_ls", force = true }
 for _, server in ipairs(servers) do
   nvim_lsp[server].setup { on_attach = on_attach }
 end

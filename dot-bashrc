@@ -1,3 +1,5 @@
+alias are='ssh -A josh@ares.silverpond.com.au'
+alias art='ssh -A josh@artemis.silverpond.com.au'
 alias cl='clear;ls'
 alias digp='dils | grep'
 alias dils='docker image list'
@@ -13,6 +15,7 @@ alias hgp='history | grep'
 alias tat='tmux a -t'
 alias tls='tmux ls'
 alias who_dis='ps -u -p'
+alias zeu='ssh -A josh@zeus.silverpond.com.au'
 alias zeus_juice='nvidia-smi'
 
 _TMUX_SHARE_FILE="/tmp/josh_tmux"
@@ -33,6 +36,30 @@ export EDITOR="nvim"
 # Enable direnv
 eval "$(direnv hook bash)"
 
+# git clone highlighter_all
+gchl () {
+  LOCATION=${1:-"X"}
+  BRANCH=${2:-master}
+  
+  if [ "$LOCATION" == "help" ]; then
+      echo "Git Clone Highlighter (ghcl)"
+      echo "USAGE: gchl LOCATION [BRANCH:master]"
+      return 0
+  fi
+  
+  if [ "$LOCATION" == "X" ]; then
+      echo "Git Clone Highlighter (ghcl)"
+      echo "USAGE: gchl LOCATION [BRANCH:master]"
+      return 0
+  fi
+ 
+  echo $LOCATION
+  echo $BRANCH
+  
+  git clone --recursive git@gitlab.com:silverpond/products/highlighter_all.git ${LOCATION}
+  cd ${LOCATION} && git fetch --all && git checkout $BRANCH
+}
+
 # Utility to create virtual envs
 venv-new() {
   VENV_NAME=${1:-"venv"}
@@ -40,3 +67,156 @@ venv-new() {
   source ${VENV_NAME}/bin/activate
   pip install --upgrade pip
 }
+
+
+
+# Select DevMode for HighlighterAll
+dm() {
+  echo_help() {
+cat <<EOF
+Unknown command: '$1'
+  Usage:
+    # Start a local highlighter_serving instance
+    dm hlser
+
+    # Activate HighlighterAll Python dev environment
+    # nix develop .\?submodules=1#hlServingInferenceDevShell
+    dm hlinf
+
+    # Activate Highlighter Train Everything environment
+    # nix develop .\?submodules=1#highlighterDevShell
+    dm eve
+      
+    # Run Highlighter SDK dev env
+    # nix develop .\?submodules=1#clientDevShell
+    dm sdk
+  
+    # Run Python tests
+    # HL_CODE_ENVIRONMENT_DESCRIPTOR=\`git describe\` nix run .\?submodules=1#hlServingPythonTests
+    dm pytest
+  
+    # Acivate HighlighterAll MMDetection training environment
+    # nix develop .\?submodules=1#hlServingMmdetTrainingDevShell
+    dm mmdet
+  
+    # Activate HighlighterAll MMPretrain training environment
+    # nix develop .\?submodules=1#hlServingMmclsTrainingDevShell
+    dm mmpre
+EOF
+}
+
+  if [ "$1" == "hlinf" ]; then
+      echo "activate hlinf"
+      
+      nix develop .\?submodules=1#hlServingInferenceDevShell
+
+  elif [ "$1" == "eve" ]; then
+      echo "activate train everything dev environment"
+      nix develop .\?submodules=1#highlighterDevShell
+
+  elif [ "$1" == "sdk" ]; then
+      echo "run python sdk"
+      nix develop .\?submodules=1#clientDevShell
+
+  elif [ "$1" == "pytest" ]; then
+      echo "run python pytests"
+      HL_CODE_ENVIRONMENT_DESCRIPTOR=`git describe` nix run .\?submodules=1#hlServingPythonTests
+
+  elif [ "$1" == "mmdet" ]; then
+      echo "activate mmdetection dev environment"
+      nix develop .\?submodules=1#hlServingMmdetTrainingDevShell
+
+  elif [ "$1" == "mmpre" ]; then
+      echo "activate mmpretrain dev environment"
+      nix develop .\?submodules=1#hlServingMmclsTrainingDevShell
+
+  elif [ "$1" == "hlser" ]; then
+      echo "start highlighter serving"
+      nix run .\?submodules=1#hlServingStartDev
+
+  else
+      echo_help $1
+  fi
+}
+
+from_zeu() {
+    # Check if at least one argument is provided
+    if [ -z "$1" ]; then
+        echo "Usage: $0 TARG [DEST(.)]"
+      exit 1
+    fi
+    TARG=${1}
+    DEST=${2:-"."}
+    rsync -apv josh@zeus.silverpond.com.au:$TARG $DEST
+}
+
+from_art() {
+    # Check if at least one argument is provided
+    if [ -z "$1" ]; then
+        echo "Usage: $0 TARG [DEST(.)]"
+      exit 1
+    fi
+    TARG=${1}
+    DEST=${2:-"."}
+    rsync -apv josh@artemis.silverpond.com.au:$TARG $DEST
+}
+
+from_are() {
+    # Check if at least one argument is provided
+    if [ -z "$1" ]; then
+        echo "Usage: $0 TARG [DEST(.)]"
+      exit 1
+    fi
+    TARG=${1}
+    DEST=${2:-"."}
+    rsync -apv josh@ares.silverpond.com.au:$TARG $DEST
+}
+
+to_zeu() {
+    # Check if at least one argument is provided
+    if [ -z "$1" ]; then
+        echo "Usage: $0 TARG [DEST(.)]"
+      exit 1
+    fi
+
+    if [ -z "$2" ]; then
+        echo "Usage: $0 TARG [DEST(.)]"
+      exit 1
+    fi
+    TARG=${1}
+    DEST=${2}
+    rsync -apv $TARG josh@zeus.silverpond.com.au:$DEST
+}
+
+to_art() {
+    # Check if at least one argument is provided
+    if [ -z "$1" ]; then
+        echo "Usage: $0 TARG [DEST(.)]"
+      exit 1
+    fi
+
+    if [ -z "$2" ]; then
+        echo "Usage: $0 TARG [DEST(.)]"
+      exit 1
+    fi
+    TARG=${1}
+    DEST=${2}
+    rsync -apv $TARG josh@artemis.silverpond.com.au:$DEST
+}
+
+to_are() {
+    # Check if at least one argument is provided
+    if [ -z "$1" ]; then
+        echo "Usage: $0 TARG [DEST(.)]"
+      exit 1
+    fi
+
+    if [ -z "$2" ]; then
+        echo "Usage: $0 TARG [DEST(.)]"
+      exit 1
+    fi
+    TARG=${1}
+    DEST=${2}
+    rsync -apv $TARG josh@ares.silverpond.com.au:$DEST
+}
+
