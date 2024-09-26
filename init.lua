@@ -256,3 +256,64 @@ vim.api.nvim_create_autocmd('LspAttach', {
     end, opts)
   end,
 })
+
+-- Function to convert camelCase to snake_case
+_G.camel_to_snake = function()
+  -- Get the selected text
+  local start_pos = vim.fn.getpos("'<")
+  local end_pos = vim.fn.getpos("'>")
+  
+  -- Save the selected range of text
+  local lines = vim.fn.getline(start_pos[2], end_pos[2])
+
+  -- Adjust the first and last lines in case it's a partial selection
+  if #lines == 1 then
+    lines[1] = string.sub(lines[1], start_pos[3], end_pos[3])
+  else
+    lines[1] = string.sub(lines[1], start_pos[3])
+    lines[#lines] = string.sub(lines[#lines], 1, end_pos[3])
+  end
+
+  -- Perform camelCase to snake_case conversion
+  for i, line in ipairs(lines) do
+    lines[i] = line:gsub('([a-z])([A-Z])', '%1_%2'):lower()
+  end
+
+  -- Replace the selected text with the modified lines
+  vim.fn.setline(start_pos[2], lines)
+end
+
+-- Keymap for visual selection conversion
+vim.api.nvim_set_keymap('v', '<leader>c2s', ":lua camel_to_snake()<CR>", { noremap = true, silent = true })
+
+
+-- Function to convert snake_case to camelCase
+_G.snake_to_camel = function()
+  -- Get the selected text
+  local start_pos = vim.fn.getpos("'<")
+  local end_pos = vim.fn.getpos("'>")
+
+  -- Save the selected range of text
+  local lines = vim.fn.getline(start_pos[2], end_pos[2])
+
+  -- Adjust the first and last lines in case it's a partial selection
+  if #lines == 1 then
+    lines[1] = string.sub(lines[1], start_pos[3], end_pos[3])
+  else
+    lines[1] = string.sub(lines[1], start_pos[3])
+    lines[#lines] = string.sub(lines[#lines], 1, end_pos[3])
+  end
+
+  -- Perform snake_case to camelCase conversion
+  for i, line in ipairs(lines) do
+    -- Convert to camelCase by finding underscores followed by letters and capitalizing the letter
+    lines[i] = line:gsub('_(%a)', function(c) return c:upper() end)
+  end
+
+  -- Replace the selected text with the modified lines
+  vim.fn.setline(start_pos[2], lines)
+end
+
+-- Keymap for visual selection conversion
+vim.api.nvim_set_keymap('v', '<leader>s2c', ":lua snake_to_camel()<CR>", { noremap = true, silent = true })
+
