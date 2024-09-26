@@ -69,8 +69,8 @@ require'nvim-treesitter.configs'.setup {
 
 --vim.keymap.set("n", "<leader>u", vim.cmd.UndotreeToggle)
 
-vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>")  -- fuzzy find_files using telescope
---vim.keymap.set("n", "<leader>fg", ":Ag<space>")
+vim.keymap.set("n", "<leader>ff", "<cmd>Telescope find_files<cr>")
+vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>")
 vim.keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>")
 vim.keymap.set("n", "<leader>fn", "<cmd>NERDTreeToggle<cr>")
 vim.keymap.set("n", "<leader>gg", "<cmd>Git<cr>")
