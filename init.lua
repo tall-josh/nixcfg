@@ -39,6 +39,8 @@ vim.opt.colorcolumn = "80"
 vim.opt.splitbelow = true  -- focus the window below when splitting
 vim.opt.splitright = true  -- focus the window to the right when vsplitting
 
+vim.opt.statusline:append("%F")  -- Show absolute path of current file at bottom of window
+
 -- COLORS
 -- Make background transparent, tbh, not a fan
 function ColorMyPencils(color)
