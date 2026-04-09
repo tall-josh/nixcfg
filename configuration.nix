@@ -25,7 +25,7 @@
   boot.loader.systemd-boot.enable = true;
   boot.loader.efi.canTouchEfiVariables = true;
 
-   networking.hostName = "feifei"; # Define your hostname.
+  networking.hostName = "luke"; # Define your hostname.
   # Pick only one of the below networking options.
   # networking.wireless.enable = true;  # Enables wireless support via wpa_supplicant.
   # networking.networkmanager.enable = true;  # Easiest to use and most distros use this by default.
@@ -48,7 +48,6 @@
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
-  services.xserver.videoDrivers = ["nvidia"];
   services.xserver.displayManager.startx.enable = true;
   nixpkgs.config.allowUnfree = true;
 
@@ -56,10 +55,12 @@
   services.xserver.displayManager.gdm.enable = true;
 
   # Nvidia shenanigans
-  services.xserver.desktopManager.gnome.enable = true;
-  hardware.nvidia.modesetting.enable = true;
-  hardware.nvidia.powerManagement.enable = true;
-  hardware.nvidia.open = false;
+  #services.xserver.desktopManager.gnome.enable = true;
+  #hardware.nvidia.modesetting.enable = true;
+  #hardware.nvidia.powerManagement.enable = true;
+  #hardware.nvidia.open = false;
+  #hardware.nvidia-container-toolkit.enable = true;
+  #services.xserver.videoDrivers = ["nvidia"];
 
   # Tailscale
   services.tailscale.enable = true;
@@ -89,28 +90,30 @@
     isNormalUser = true;
     extraGroups = [ "wheel" "docker" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
-      (import /home/josh/repos/josh_config/neovim.nix pkgs)
-      ripgrep
-      firefox
-      tree
-      terminator
-      git
-      tig
-      ruff
-      direnv
-      pyright
-      bat
-      kazam
-      docker-compose
-      vlc
-      obsidian
-      #black
-      #pylint
-      #python311Packages.pyls-isort
-      #python311Packages.pytest
-      #nbstripout
-      #hatch
-    ];
+      (import ./neovim.nix pkgs)
+          kitty
+          ripgrep
+          firefox
+          tree
+          git
+          tig
+          lazygit
+          ruff
+          direnv
+          pyright
+          bat
+          obs-studio
+          docker-compose
+          vlc
+          obsidian
+          openshot-qt
+          slack
+
+          wget
+          jq
+          gcc
+          appimage-run
+        ];
   };
 
   # List packages installed in system profile. To search, run:
@@ -132,9 +135,9 @@
 
   virtualisation.docker.enable = true;
   virtualisation.docker.storageDriver = "zfs";
-  virtualisation.docker.enableNvidia = true;
-  hardware.opengl.driSupport32Bit = true;
+  #virtualisation.docker.enableNvidia = true;
   virtualisation.docker.autoPrune.enable = true;
+  hardware.opengl.driSupport32Bit = true;
 
   programs.appimage.enable = true;
 
@@ -153,7 +156,7 @@
 
   # Ollama
   services.ollama.enable = true;
-  services.ollama.acceleration = "cuda";
+  #services.ollama.acceleration = "cuda";
   
 
   # Open ports in the firewall.
@@ -197,6 +200,5 @@
 services.desktopManager.gnome.enable = true;
 services.displayManager.gdm.enable = true;
 hardware.graphics.enable32Bit = true;
-hardware.nvidia-container-toolkit.enable = true;
 }
 
