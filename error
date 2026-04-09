@@ -1,24 +1,45 @@
 $ sudo nixos-rebuild switch --flake .#luke
-[sudo] password for josh: 
-error:
-       … while calling the 'seq' builtin
-         at /nix/store/3p306srz83h9z9v0ma9xcxb8y8cdxkxj-source/lib/modules.nix:359:18:
-          358|         options = checked options;
-          359|         config = checked (removeAttrs config [ "_module" ]);
-             |                  ^
-          360|         _module = checked (config._module);
-
-       … while calling the 'throw' builtin
-         at /nix/store/3p306srz83h9z9v0ma9xcxb8y8cdxkxj-source/lib/modules.nix:331:13:
-          330|           else
-          331|             throw baseMsg
-             |             ^
-          332|         else
-
-       error: The option `services.desktopManager.gnome' does not exist. Definition values:
-       - In `/nix/store/jkjg8gqsg1cwv39sjvcf7srzs6ybj54g-source/configuration.nix':
-           {
-             enable = true;
-           }
-Command 'nix --extra-experimental-features 'nix-command flakes' build --print-out-paths '.#nixosConfigurations."luke".config.system.build.nixos-rebuild' --no-link' returned non-zero exit status 1.
+building the system configuration...
+evaluation warning: The option `hardware.opengl.driSupport32Bit' defined in `/nix/store/hffrma50f3xl5554ibjzixklaxgl8zr4-source/configuration.nix' has been renamed to `hardware.graphics.enable32Bit'.
+stopping the following units: accounts-daemon.service, avahi-daemon.service, avahi-daemon.socket, colord.service, cups-browsed.service, cups.service, cups.socket, kmod-static-nodes.service, lastlog2-import.service, logrotate-checkconf.service, ModemManager.service, network-setup.service, NetworkManager-wait-online.service, NetworkManager.service, nscd.service, power-profiles-daemon.service, resolvconf.service, rtkit-daemon.service, system-cups.slice, systemd-machined.service, systemd-modules-load.service, systemd-oomd.service, systemd-oomd.socket, systemd-sysctl.service, systemd-timesyncd.service, systemd-udev-trigger.service, systemd-update-done.service, systemd-vconsole-setup.service, udisks2.service, upower.service, wpa_supplicant.service
+NOT restarting the following changed units: bluetooth.service, display-manager.service, systemd-backlight@backlight:intel_backlight.service, systemd-backlight@leds:tpacpi::kbd_backlight.service, systemd-fsck@dev-disk-by\x2duuid-F4CE\x2d425A.service, systemd-journal-flush.service, systemd-logind.service, systemd-random-seed.service, systemd-remount-fs.service, systemd-tmpfiles-setup.service, systemd-update-utmp.service, systemd-user-sessions.service, user-runtime-dir@1000.service, user@1000.service
+activating the configuration...
+removing group ‘lpadmin’
+removing group ‘clock’
+removing group ‘gnome-initial-setup’
+removing user ‘cups’
+removing user ‘gdm-greeter’
+removing user ‘gdm-greeter-2’
+removing user ‘gdm-greeter-1’
+removing user ‘gdm-greeter-4’
+removing user ‘gdm-greeter-3’
+setting up /etc...
+removing obsolete symlink ‘/etc/cups’...
+removing obsolete symlink ‘/etc/gai.conf’...
+removing obsolete symlink ‘/etc/firefox/policies/policies.json’...
+removing obsolete symlink ‘/etc/pam.d/cups’...
+removing obsolete symlink ‘/etc/tmpfiles.d/lastlog2-tmpfiles.conf’...
+restarting systemd...
+reloading user units for josh...
+restarting sysinit-reactivation.target
+reloading the following units: dbus.service, firewall.service, reload-systemd-vconsole-setup.service
+restarting the following units: nix-daemon.service, polkit.service, systemd-journald.service, systemd-udevd.service
+starting the following units: accounts-daemon.service, avahi-daemon.socket, colord.service, kmod-static-nodes.service, lastlog2-import.service, logrotate-checkconf.service, ModemManager.service, network-setup.service, NetworkManager-wait-online.service, NetworkManager.service, nscd.service, power-profiles-daemon.service, resolvconf.service, rtkit-daemon.service, systemd-machined.service, systemd-modules-load.service, systemd-oomd.socket, systemd-sysctl.service, systemd-timesyncd.service, systemd-udev-trigger.service, systemd-update-done.service, systemd-vconsole-setup.service, udisks2.service, upower.service, wpa_supplicant.service
+the following new units were started: audit.service, docker-prune.timer, docker.socket, getty@tty1.service, mount-pstore.service, NetworkManager-dispatcher.service, nixos-upgrade.timer, ollama.service, sshd-unix-local.socket, sshd.service, sys-devices-virtual-misc-tun.device, sys-devices-virtual-net-tailscale0.device, sys-kernel-config.mount, sys-module-configfs.device, sys-module-tun.device, sys-subsystem-net-devices-tailscale0.device, sysinit-reactivation.target, system-getty.slice, system-systemd\x2dcoredump.slice, systemd-hostnamed.service, systemd-tmpfiles-resetup.service, tailscaled.service
+warning: the following units failed: docker.service
+● docker.service - Docker Application Container Engine
+     Loaded: loaded (/etc/systemd/system/docker.service; enabled; preset: ignored)
+    Drop-In: /nix/store/lvmad0xn0b5z79s9jp1ds6pn1yf1n19i-system-units/docker.service.d
+             └─overrides.conf
+     Active: activating (auto-restart) (Result: exit-code) since Thu 2026-04-09 23:33:43 AEST; 351ms ago
+ Invocation: 27a35ae065a8425a88dd1813cb2d86a4
+TriggeredBy: ● docker.socket
+       Docs: https://docs.docker.com
+    Process: 31906 ExecStart=/nix/store/q69wm6668vwgwk9r7yxzrny5nfdn2iih-docker-27.5.1/bin/dockerd --config-file=/nix/store/lx927p5ylshcbsn9na4zd1k0f9ww8v8l-daemon.json (code=exited, status=1/FAILURE)
+   Main PID: 31906 (code=exited, status=1/FAILURE)
+         IP: 0B in, 0B out
+         IO: 117M read, 68K written
+   Mem peak: 150.1M
+        CPU: 233ms
+warning: error(s) occurred while switching to the new configuration
 
