@@ -12,8 +12,14 @@
     ];
 
   nix.extraOptions = ''
-      experimental-features = nix-command flakes
-      '';
+    experimental-features = nix-command flakes
+    allow-import-from-derivation = false
+    trusted-users = josh
+    require-sigs = false
+  '';
+
+  # Is this correct?
+  #nix.settings.trusted-substituters = ["ssh-ng://jono@tsuruhashi" "https://mitchellh-nixos-config.cachix.org" "https://cache.nixos.org/"];
 
   # Use the systemd-boot EFI boot loader.
   boot.loader.systemd-boot.enable = true;
@@ -38,6 +44,7 @@
   #   keyMap = "us";
   #   useXkbConfig = true; # use xkb.options in tty.
   # };
+  services.gnome.gnome-keyring.enable = true;
 
   # Enable the X11 windowing system.
   services.xserver.enable = true;
@@ -52,11 +59,11 @@
   services.xserver.desktopManager.gnome.enable = true;
   hardware.nvidia.modesetting.enable = true;
   hardware.nvidia.powerManagement.enable = true;
+  hardware.nvidia.open = false;
 
   # Tailscale
   services.tailscale.enable = true;
-  
-  
+
   # Configure keymap in X11
   # services.xserver.xkb.layout = "us";
   # services.xserver.xkb.options = "eurosign:e,caps:escape";
@@ -71,21 +78,32 @@
   # Enable touchpad support (enabled default in most desktopManager).
   # services.xserver.libinput.enable = true;
 
+  # Obsidian pulls in electron which is an unfree package so we need to add this to 
+  # allow the install
+  nixpkgs.config.permittedInsecurePackages = [
+    "electron-25.9.0"
+  ];
+
   # Define a user account. Don't forget to set a password with ‘passwd’.
   users.users.josh = {
     isNormalUser = true;
-    extraGroups = [ "wheel" ]; # Enable ‘sudo’ for the user.
+    extraGroups = [ "wheel" "docker" ]; # Enable ‘sudo’ for the user.
     packages = with pkgs; [
-      (import /home/josh/work/josh_config/neovim.nix pkgs)
+      (import /home/josh/repos/josh_config/neovim.nix pkgs)
       ripgrep
       firefox
       tree
       terminator
       git
       tig
-      ruff-lsp
+      ruff
       direnv
-      nodePackages.pyright
+      pyright
+      bat
+      kazam
+      docker-compose
+      vlc
+      obsidian
       #black
       #pylint
       #python311Packages.pyls-isort
@@ -101,9 +119,24 @@
     vim # Do not forget to add an editor to edit configuration.nix! The Nano editor is also installed by default.
     neovim
     wget
-    google-chrome
     slack
+    jq
+    google-chrome
+    gcc-unwrapped
+    obs-studio
+    appimage-run
+    #openshot-qt
+    #libsForQt5.libopenshot
   ];
+
+
+  virtualisation.docker.enable = true;
+  virtualisation.docker.storageDriver = "zfs";
+  virtualisation.docker.enableNvidia = true;
+  hardware.opengl.driSupport32Bit = true;
+  virtualisation.docker.autoPrune.enable = true;
+
+  programs.appimage.enable = true;
 
   # Some programs need SUID wrappers, can be configured further or are
   # started in user sessions.
@@ -117,6 +150,11 @@
 
   # Enable the OpenSSH daemon.
   services.openssh.enable = true;
+
+  # Ollama
+  services.ollama.enable = true;
+  services.ollama.acceleration = "cuda";
+  
 
   # Open ports in the firewall.
   # networking.firewall.allowedTCPPorts = [ ... ];
@@ -147,5 +185,18 @@
   # For more information, see `man configuration.nix` or https://nixos.org/manual/nixos/stable/options#opt-system.stateVersion .
   system.stateVersion = "23.11"; # Did you read the comment?
 
+ 
+  system.autoUpgrade = {
+    enable = true;
+    dates = "01:00";
+    randomizedDelaySec = "45min";
+    flags = [ "--upgrade" ];
+    operation = "switch";
+  };
+
+services.desktopManager.gnome.enable = true;
+services.displayManager.gdm.enable = true;
+hardware.graphics.enable32Bit = true;
+hardware.nvidia-container-toolkit.enable = true;
 }
 
