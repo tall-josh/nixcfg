@@ -55,7 +55,7 @@
   services.xserver.displayManager.gdm.enable = true;
 
   # Nvidia shenanigans
-  #services.xserver.desktopManager.gnome.enable = true;
+  services.xserver.desktopManager.gnome.enable = true;
   #hardware.nvidia.modesetting.enable = true;
   #hardware.nvidia.powerManagement.enable = true;
   #hardware.nvidia.open = false;
@@ -196,9 +196,6 @@
     flags = [ "--upgrade" ];
     operation = "switch";
   };
-services.xserver.enable = true;
-services.xserver.displayManager.gdm.enable = true;
-services.xserver.desktopManager.gnome.enable = true;
 hardware.graphics.enable32Bit = true;
 }
 
