@@ -16,7 +16,7 @@
         in
         import ./neovim.nix pkgs;
 
-      nixosConfigurations.feifei = nixpkgs.lib.nixosSystem {
+      nixosConfigurations.luke = nixpkgs.lib.nixosSystem {
         inherit system;
         modules = [
           ./configuration.nix
