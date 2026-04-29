@@ -1,13 +1,14 @@
 # nix profile add github:tall-josh/nixcfg#neovim
 pkgs: pkgs.wrapNeovim pkgs.neovim-unwrapped {
+  extraMakeWrapperArgs = "--suffix PATH : ${pkgs.lib.makeBinPath (with pkgs; [
+    ruff
+    pyright
+    lua-language-server
+    typescript-language-server
+    typescript
+  ])}";
 
   configure = {
-
-    buildInputs = with pkgs; [
-        ruff-lsp
-        nodePackages.pyright
-    ];
-
     customRC = ''
       lua << EOF
       ${builtins.readFile ./init.lua}
@@ -39,4 +40,3 @@ pkgs: pkgs.wrapNeovim pkgs.neovim-unwrapped {
     };
   };
 }
-

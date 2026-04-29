@@ -123,7 +123,7 @@ local on_attach = function(client, bufnr)
   --   buffer = bufnr,
   --   callback = function() vim.lsp.buf.format() end,
   -- })
-  -- local opts = { buffer = bufnr, remap = false }
+  local opts = { buffer = bufnr, remap = false }
   vim.keymap.set("n", "K", vim.lsp.buf.hover, opts)
   vim.keymap.set("n", "[d", vim.diagnostic.goto_next, opts)
   vim.keymap.set("n", "]d", vim.diagnostic.goto_prev, opts)
@@ -136,13 +136,16 @@ end
 
 -- LSP SETUP
 local nvim_lsp = require('lspconfig')
-nvim_lsp["ruff_lsp"].setup {
+local capabilities = require('cmp_nvim_lsp').default_capabilities()
+
+nvim_lsp["ruff"].setup {
     on_attach = on_attach,
+    capabilities = capabilities,
     init_options = {
         settings = {
+            fixAll = true,
             organizeImports = true,
             lint = {
-                -- enable = true,
                 run = "onType", -- or "onType" | "onSave"
                 args = {
                     "--select=E4,E7,E9,F,ARG,I",
@@ -150,6 +153,42 @@ nvim_lsp["ruff_lsp"].setup {
             }
         }
     }
+}
+
+nvim_lsp["pyright"].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    pyright = {
+      disableOrganizeImports = true,
+    },
+    python = {
+      analysis = {
+        autoSearchPaths = true,
+        useLibraryCodeForTypes = true,
+      },
+    },
+  },
+}
+
+nvim_lsp["lua_ls"].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
+  settings = {
+    Lua = {
+      diagnostics = {
+        globals = { "vim" },
+      },
+      workspace = {
+        checkThirdParty = false,
+      },
+    },
+  },
+}
+
+nvim_lsp["ts_ls"].setup {
+  on_attach = on_attach,
+  capabilities = capabilities,
 }
 
 -- CODE COMPLETION
@@ -209,16 +248,12 @@ cmp.setup.cmdline(':', {
   matching = { disallow_symbol_nonprefix_matching = false }
 })
 
--- Set up lspconfig.
-local capabilities = require('cmp_nvim_lsp').default_capabilities()
--- Replace <YOUR_LSP_SERVER> with each lsp server you've enabled.
-nvim_lsp["ruff_lsp"].setup {
-  capabilities = capabilities
-  }
-
-local servers = { "pyright", "flake8-bandit", "isort", "tsserver", "ruff_lsp", "lua_ls", force = true }
+local servers = {}
 for _, server in ipairs(servers) do
-  nvim_lsp[server].setup { on_attach = on_attach }
+  nvim_lsp[server].setup {
+    on_attach = on_attach,
+    capabilities = capabilities,
+  }
 end
 
 -- Global mappings.
@@ -318,4 +353,3 @@ end
 
 -- Keymap for visual selection conversion
 vim.api.nvim_set_keymap('v', '<leader>s2c', ":lua snake_to_camel()<CR>", { noremap = true, silent = true })
-
