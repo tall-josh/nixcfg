@@ -1,3 +1,4 @@
+# nix profile add github:tall-josh/nixcfg#neovim
 pkgs: pkgs.wrapNeovim pkgs.neovim-unwrapped {
 
   configure = {
