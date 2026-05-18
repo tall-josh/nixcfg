@@ -112,6 +112,74 @@ local config = {
 
 vim.diagnostic.config(config)
 
+local function run_ruff(cmd, input)
+  local output = vim.fn.system(cmd, input)
+  if vim.v.shell_error ~= 0 then
+    vim.notify(output, vim.log.levels.WARN)
+    return nil
+  end
+
+  return output
+end
+
+local function ruff_format_on_save()
+  if vim.bo.filetype ~= "python" then
+    return
+  end
+
+  local filename = vim.api.nvim_buf_get_name(0)
+  if filename == "" then
+    return
+  end
+
+  local input = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+  if vim.bo.endofline then
+    input = input .. "\n"
+  end
+
+  local sorted = run_ruff({
+    "ruff",
+    "check",
+    "--select",
+    "I",
+    "--fix",
+    "--quiet",
+    "--stdin-filename",
+    filename,
+    "-",
+  }, input)
+  if not sorted then
+    return
+  end
+
+  local formatted = run_ruff({
+    "ruff",
+    "format",
+    "--quiet",
+    "--stdin-filename",
+    filename,
+    "-",
+  }, sorted)
+  if not formatted then
+    return
+  end
+
+  local view = vim.fn.winsaveview()
+  local lines = vim.split(formatted, "\n", { plain = true })
+  if lines[#lines] == "" then
+    table.remove(lines, #lines)
+  end
+  vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+  vim.fn.winrestview(view)
+end
+
+local python_ruff_format_group = vim.api.nvim_create_augroup("python_ruff_format", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = python_ruff_format_group,
+  pattern = "*.py",
+  callback = ruff_format_on_save,
+})
+
 local on_attach = function(client, bufnr)
   -- vim.api.nvim_create_autocmd("BufWritePre", {
   --   buffer = bufnr,
