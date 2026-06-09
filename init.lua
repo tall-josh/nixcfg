@@ -112,6 +112,18 @@ local config = {
 
 vim.diagnostic.config(config)
 
+vim.api.nvim_create_autocmd("CursorHold", {
+  callback = function()
+    local opts = {
+      focusable = false,
+      close_events = { "BufLeave", "CursorMoved", "InsertEnter", "FocusLost" },
+      scope = "cursor",
+    }
+
+    vim.diagnostic.open_float(nil, opts)
+  end,
+})
+
 local function run_ruff(cmd, input)
   local output = vim.fn.system(cmd, input)
   if vim.v.shell_error ~= 0 then
