@@ -76,6 +76,13 @@ vim.keymap.set("n", "<leader>fg", "<cmd>Telescope live_grep<cr>")
 vim.keymap.set("n", "<leader>fr", "<cmd>Telescope oldfiles<cr>")
 vim.keymap.set("n", "<leader>fn", "<cmd>NERDTreeToggle<cr>")
 vim.keymap.set("n", "<leader>gg", "<cmd>Git<cr>")
+vim.keymap.set("n", "dv", "<cmd>DiffviewOpen<cr>")
+vim.api.nvim_create_autocmd("FileType", {
+  pattern = { "DiffviewFiles", "DiffviewFileHistory" },
+  callback = function(args)
+    vim.keymap.set("n", "dc", "<cmd>DiffviewClose<cr>", { buffer = args.buf, silent = true })
+  end,
+})
 vim.keymap.set("n", "<leader>sv", "<cmd>:vsplit<cr>") -- split vert
 vim.keymap.set("n", "<leader>sh", "<cmd>:split<cr>")  -- split horo
 

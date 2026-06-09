@@ -24,6 +24,8 @@ pkgs: pkgs.wrapNeovim pkgs.neovim-unwrapped {
         #nvim-treesitter.withAllGrammars
 	    (nvim-treesitter.withPlugins (p: [ p.c p.java p.python p.json p.yaml p.toml p.lua p.nix ]))
         vim-fugitive
+        diffview-nvim
+        nvim-web-devicons
 	    #lsp-zero-nvim
         nvim-lspconfig
         cmp-nvim-lsp
