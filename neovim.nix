@@ -6,6 +6,7 @@ pkgs: pkgs.wrapNeovim pkgs.neovim-unwrapped {
     lua-language-server
     typescript-language-server
     typescript
+    alejandra
   ])}";
 
   configure = {

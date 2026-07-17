@@ -199,6 +199,28 @@ vim.api.nvim_create_autocmd("BufWritePre", {
   callback = ruff_format_on_save,
 })
 
+local nix_alejandra_format_group = vim.api.nvim_create_augroup("nix_alejandra_format", { clear = true })
+vim.api.nvim_create_autocmd("BufWritePre", {
+  group = nix_alejandra_format_group,
+  pattern = "*.nix",
+  callback = function()
+    local filename = vim.api.nvim_buf_get_name(0)
+    if filename == "" then return end
+    local input = table.concat(vim.api.nvim_buf_get_lines(0, 0, -1, false), "\n")
+    if vim.bo.endofline then input = input .. "\n" end
+    local output = vim.fn.system({ "alejandra", "--stdin" }, input)
+    if vim.v.shell_error ~= 0 then
+      vim.notify(output, vim.log.levels.WARN)
+      return
+    end
+    local view = vim.fn.winsaveview()
+    local lines = vim.split(output, "\n", { plain = true })
+    if lines[#lines] == "" then table.remove(lines, #lines) end
+    vim.api.nvim_buf_set_lines(0, 0, -1, false, lines)
+    vim.fn.winrestview(view)
+  end,
+})
+
 local on_attach = function(client, bufnr)
   -- vim.api.nvim_create_autocmd("BufWritePre", {
   --   buffer = bufnr,
